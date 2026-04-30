@@ -1,11 +1,15 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Email Signatures</title>
     <style>
-      * { box-sizing: border-box; margin: 0; padding: 0; }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
       body {
         font-family: "Segoe UI", Arial, sans-serif;
@@ -30,15 +34,21 @@
         background: #fff;
         border-bottom: 1px solid #e0e0e0;
       }
-      .breadcrumb span { cursor: default; }
+      .breadcrumb span {
+        cursor: default;
+      }
       .breadcrumb a {
         color: #019ee3;
         text-decoration: none;
         cursor: pointer;
       }
-      .breadcrumb a:hover { text-decoration: underline; }
+      .breadcrumb a:hover {
+        text-decoration: underline;
+      }
 
-      .container { padding: 28px 32px; }
+      .container {
+        padding: 28px 32px;
+      }
 
       /* ── Company grid ── */
       .companies-grid {
@@ -54,10 +64,12 @@
         padding: 28px 32px;
         cursor: pointer;
         width: 260px;
-        transition: box-shadow 0.18s, border-color 0.18s;
+        transition:
+          box-shadow 0.18s,
+          border-color 0.18s;
       }
       .company-card:hover {
-        box-shadow: 0 4px 18px rgba(1,158,227,0.15);
+        box-shadow: 0 4px 18px rgba(1, 158, 227, 0.15);
         border-color: #019ee3;
       }
       .company-card .company-icon {
@@ -101,10 +113,12 @@
         padding: 16px 20px;
         cursor: pointer;
         width: 240px;
-        transition: box-shadow 0.18s, border-color 0.18s;
+        transition:
+          box-shadow 0.18s,
+          border-color 0.18s;
       }
       .sig-card:hover {
-        box-shadow: 0 3px 14px rgba(1,158,227,0.15);
+        box-shadow: 0 3px 14px rgba(1, 158, 227, 0.15);
         border-color: #019ee3;
       }
       .sig-card .sig-avatar {
@@ -168,7 +182,9 @@
         color: #444;
         transition: background 0.15s;
       }
-      .btn-back:hover { background: #f0f0f0; }
+      .btn-back:hover {
+        background: #f0f0f0;
+      }
 
       .sig-iframe-wrap {
         background: #fff;
@@ -186,8 +202,81 @@
       }
 
       /* ── Sections ── */
-      .section { display: none; }
-      .section.active { display: block; }
+      .section {
+        display: none;
+      }
+      .section.active {
+        display: block;
+      }
+
+      /* ── Fullscreen modal ── */
+      .fs-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: #fff;
+        z-index: 9999;
+        flex-direction: column;
+      }
+      .fs-overlay.open {
+        display: flex;
+      }
+      .fs-toolbar {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 20px;
+        background: #f4f6f9;
+        border-bottom: 1px solid #e0e0e0;
+        flex-shrink: 0;
+      }
+      .fs-toolbar span {
+        font-size: 14px;
+        font-weight: 600;
+        color: #333;
+        flex: 1;
+      }
+      .btn-fs-close {
+        background: none;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        padding: 6px 14px;
+        font-size: 13px;
+        cursor: pointer;
+        color: #444;
+        transition: background 0.15s;
+      }
+      .btn-fs-close:hover {
+        background: #e8e8e8;
+      }
+      .fs-body {
+        flex: 1;
+        overflow: auto;
+        padding: 32px;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+      }
+      .fs-body iframe {
+        width: 100%;
+        max-width: 760px;
+        border: none;
+        min-height: 600px;
+      }
+
+      .btn-fullscreen {
+        background: #019ee3;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        padding: 6px 14px;
+        font-size: 13px;
+        cursor: pointer;
+        transition: background 0.15s;
+      }
+      .btn-fullscreen:hover {
+        background: #017bb5;
+      }
     </style>
   </head>
   <body>
@@ -198,7 +287,6 @@
     </div>
 
     <div class="container">
-
       <!-- COMPANIES LIST -->
       <div class="section active" id="section-home">
         <div class="companies-grid" id="companies-grid"></div>
@@ -217,12 +305,33 @@
         <div class="viewer-toolbar">
           <button class="btn-back" id="btn-back-to-company">← Back</button>
           <h2 id="viewer-title"></h2>
+          <button class="btn-fullscreen" id="btn-fullscreen">
+            ⛶ Full Screen
+          </button>
         </div>
         <div class="sig-iframe-wrap">
-          <iframe id="sig-iframe" src="" title="Email Signature Preview"></iframe>
+          <iframe
+            id="sig-iframe"
+            src=""
+            title="Email Signature Preview"
+          ></iframe>
         </div>
       </div>
+    </div>
 
+    <!-- FULLSCREEN OVERLAY -->
+    <div class="fs-overlay" id="fs-overlay">
+      <div class="fs-toolbar">
+        <span id="fs-title"></span>
+        <button class="btn-fs-close" id="btn-fs-close">✕ Close</button>
+      </div>
+      <div class="fs-body">
+        <iframe
+          id="fs-iframe"
+          src=""
+          title="Email Signature Fullscreen"
+        ></iframe>
+      </div>
     </div>
 
     <script>
@@ -232,40 +341,156 @@
           name: "Ghothane Lawyers",
           icon: "⚖️",
           signatures: [
-            { file: "tonnou.html",    name: "Tonnou Ghothane",      position: "Principal Lawyer",                                  email: "tonnou@ghothane.com.au" },
-            { file: "ajay.html",      name: "Ajay Sharma",          position: "Senior Lawyer",                                     email: "ajay@ghothane.com.au" },
-            { file: "rajaneesh.html", name: "Rajaneesh Shah",       position: "Senior Lawyer",                                     email: "rajaneesh@ghothane.com.au" },
-            { file: "anjana.html",    name: "Anjana Lama",          position: "Immigration Consultant",                            email: "anjana@ghothane.com.au" },
-            { file: "sachyam.html",   name: "Sachyam Bhattachan",   position: "Business Development and Marketing Manager",        email: "sachyam@ghothane.com.au" },
-            { file: "srijju.html",    name: "Srijju Shakya",        position: "Manager",                                           email: "srijju@ghothane.com.au" },
-            { file: "sunaina.html",   name: "Sunaina Shrestha",     position: "Paralegal Team Leader",                             email: "sunaina@ghothane.com.au" },
-            { file: "stuti.html",     name: "Stuti Khadka",         position: "Legal Secretary",                                   email: "stuti@ghothane.com.au" },
-            { file: "priya.html",     name: "Priya Upadhayay",      position: "Office Secretary",                                  email: "priya@ghothane.com.au" },
-            { file: "bibisha.html",   name: "Bibisha Shrestha",     position: "Paralegal",                                         email: "bibisha@ghothane.com.au" },
-            { file: "minma.html",     name: "Minma Hangma Rai",     position: "Paralegal",                                         email: "minma@ghothane.com.au" },
-            { file: "deeti.html",     name: "Deeti Acharya",        position: "Paralegal",                                         email: "deeti@ghothane.com.au" },
-            { file: "bishnu.html",    name: "Bishnu Maya Sunuwar",  position: "Paralegal",                                         email: "bishnu@ghothane.com.au" },
-            { file: "manusha.html",   name: "Manusha Shrestha",     position: "Paralegal",                                         email: "manusha@ghothane.com.au" },
-            { file: "pratiksha.html", name: "Pratiksha Joshi",      position: "Paralegal",                                         email: "pratiksha@ghothane.com.au" },
-            { file: "binita.html",    name: "Binita Prajapati",     position: "Paralegal",                                         email: "binita@ghothane.com.au" },
-            { file: "prerana.html",   name: "Prerana Rajbanshi",    position: "Paralegal",                                         email: "prerana@ghothane.com.au" },
-            { file: "accounts.html",  name: "Accounts",             position: "Department",                                        email: "accounts@ghothane.com.au" },
-            { file: "immigration.html",name:"Immigration",          position: "Department",                                        email: "immigration@ghothane.com.au" },
-            { file: "info.html",      name: "Info",                 position: "Department",                                        email: "info@ghothane.com.au" },
-            { file: "leads.html",     name: "Leads",                position: "Department",                                        email: "leads@ghothane.com.au" },
-            { file: "visa.html",      name: "Visa",                 position: "Department",                                        email: "visa@ghothane.com.au" },
-          ]
-        }
+            {
+              file: "tonnou.html",
+              name: "Tonnou Ghothane",
+              position: "Principal Lawyer",
+              email: "tonnou@ghothane.com.au",
+            },
+            {
+              file: "ajay.html",
+              name: "Ajay Sharma",
+              position: "Senior Lawyer",
+              email: "ajay@ghothane.com.au",
+            },
+            {
+              file: "rajaneesh.html",
+              name: "Rajaneesh Shah",
+              position: "Senior Lawyer",
+              email: "rajaneesh@ghothane.com.au",
+            },
+            {
+              file: "anjana.html",
+              name: "Anjana Lama",
+              position: "Immigration Consultant",
+              email: "anjana@ghothane.com.au",
+            },
+            {
+              file: "sachyam.html",
+              name: "Sachyam Bhattachan",
+              position: "Business Development and Marketing Manager",
+              email: "sachyam@ghothane.com.au",
+            },
+            {
+              file: "srijju.html",
+              name: "Srijju Shakya",
+              position: "Manager",
+              email: "srijju@ghothane.com.au",
+            },
+            {
+              file: "sunaina.html",
+              name: "Sunaina Shrestha",
+              position: "Paralegal Team Leader",
+              email: "sunaina@ghothane.com.au",
+            },
+            {
+              file: "stuti.html",
+              name: "Stuti Khadka",
+              position: "Legal Secretary",
+              email: "stuti@ghothane.com.au",
+            },
+            {
+              file: "priya.html",
+              name: "Priya Upadhayay",
+              position: "Office Secretary",
+              email: "priya@ghothane.com.au",
+            },
+            {
+              file: "bibisha.html",
+              name: "Bibisha Shrestha",
+              position: "Paralegal",
+              email: "bibisha@ghothane.com.au",
+            },
+            {
+              file: "minma.html",
+              name: "Minma Hangma Rai",
+              position: "Paralegal",
+              email: "minma@ghothane.com.au",
+            },
+            {
+              file: "deeti.html",
+              name: "Deeti Acharya",
+              position: "Paralegal",
+              email: "deeti@ghothane.com.au",
+            },
+            {
+              file: "bishnu.html",
+              name: "Bishnu Maya Sunuwar",
+              position: "Paralegal",
+              email: "bishnu@ghothane.com.au",
+            },
+            {
+              file: "manusha.html",
+              name: "Manusha Shrestha",
+              position: "Paralegal",
+              email: "manusha@ghothane.com.au",
+            },
+            {
+              file: "pratiksha.html",
+              name: "Pratiksha Joshi",
+              position: "Paralegal",
+              email: "pratiksha@ghothane.com.au",
+            },
+            {
+              file: "binita.html",
+              name: "Binita Prajapati",
+              position: "Paralegal",
+              email: "binita@ghothane.com.au",
+            },
+            {
+              file: "prerana.html",
+              name: "Prerana Rajbanshi",
+              position: "Paralegal",
+              email: "prerana@ghothane.com.au",
+            },
+            {
+              file: "accounts.html",
+              name: "Accounts",
+              position: "Department",
+              email: "accounts@ghothane.com.au",
+            },
+            {
+              file: "immigration.html",
+              name: "Immigration",
+              position: "Department",
+              email: "immigration@ghothane.com.au",
+            },
+            {
+              file: "info.html",
+              name: "Info",
+              position: "Department",
+              email: "info@ghothane.com.au",
+            },
+            {
+              file: "leads.html",
+              name: "Leads",
+              position: "Department",
+              email: "leads@ghothane.com.au",
+            },
+            {
+              file: "visa.html",
+              name: "Visa",
+              position: "Department",
+              email: "visa@ghothane.com.au",
+            },
+          ],
+        },
       ];
 
       let currentCompany = null;
 
       function initials(name) {
-        return name.split(" ").slice(0, 2).map(w => w[0].toUpperCase()).join("");
+        return name
+          .split(" ")
+          .slice(0, 2)
+          .map((w) => w[0].toUpperCase())
+          .join("");
       }
 
       function showSection(id) {
-        document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+        document
+          .querySelectorAll(".section")
+          .forEach((s) => s.classList.remove("active"));
         document.getElementById(id).classList.add("active");
       }
 
@@ -277,7 +502,7 @@
       function renderHome() {
         const grid = document.getElementById("companies-grid");
         grid.innerHTML = "";
-        companies.forEach(company => {
+        companies.forEach((company) => {
           const card = document.createElement("div");
           card.className = "company-card";
           card.innerHTML = `
@@ -299,7 +524,7 @@
         const grid = document.getElementById("sig-grid");
         grid.innerHTML = "";
 
-        company.signatures.forEach(sig => {
+        company.signatures.forEach((sig) => {
           const card = document.createElement("div");
           card.className = "sig-card";
           card.innerHTML = `
@@ -324,7 +549,11 @@
         const iframe = document.getElementById("sig-iframe");
         iframe.src = `${company.id}/${sig.file}`;
 
-        document.getElementById("btn-back-to-company").onclick = () => renderCompany(company);
+        document.getElementById("btn-back-to-company").onclick = () =>
+          renderCompany(company);
+
+        document.getElementById("btn-fullscreen").onclick = () =>
+          openFullscreen(company, sig);
 
         setBreadcrumb(`
           <a onclick="renderHome()">Home</a> /
@@ -334,13 +563,42 @@
         showSection("section-viewer");
       }
 
-      // Auto-resize iframe
-      document.getElementById("sig-iframe").addEventListener("load", function () {
-        try {
-          const h = this.contentDocument.body.scrollHeight;
-          if (h > 100) this.style.height = (h + 40) + "px";
-        } catch(e) {}
+      // ── Fullscreen ──
+      function openFullscreen(company, sig) {
+        const overlay = document.getElementById("fs-overlay");
+        const fsIframe = document.getElementById("fs-iframe");
+        document.getElementById("fs-title").textContent =
+          sig.name + " — " + sig.position;
+        fsIframe.src = `${company.id}/${sig.file}`;
+        overlay.classList.add("open");
+        document.body.style.overflow = "hidden";
+      }
+
+      document.getElementById("btn-fs-close").addEventListener("click", () => {
+        document.getElementById("fs-overlay").classList.remove("open");
+        document.getElementById("fs-iframe").src = "";
+        document.body.style.overflow = "";
       });
+
+      // Auto-resize fullscreen iframe
+      document
+        .getElementById("fs-iframe")
+        .addEventListener("load", function () {
+          try {
+            const h = this.contentDocument.body.scrollHeight;
+            if (h > 100) this.style.height = h + 40 + "px";
+          } catch (e) {}
+        });
+
+      // Auto-resize iframe
+      document
+        .getElementById("sig-iframe")
+        .addEventListener("load", function () {
+          try {
+            const h = this.contentDocument.body.scrollHeight;
+            if (h > 100) this.style.height = h + 40 + "px";
+          } catch (e) {}
+        });
 
       renderHome();
     </script>
