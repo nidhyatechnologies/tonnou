@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Email Signatures</title>
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+
+      body {
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: #f4f6f9;
+        color: #222;
+        min-height: 100vh;
+      }
+
+      header {
+        background: #019ee3;
+        color: #fff;
+        padding: 18px 32px;
+        font-size: 20px;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+      }
+
+      .breadcrumb {
+        padding: 12px 32px;
+        font-size: 13px;
+        color: #666;
+        background: #fff;
+        border-bottom: 1px solid #e0e0e0;
+      }
+      .breadcrumb span { cursor: default; }
+      .breadcrumb a {
+        color: #019ee3;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      .breadcrumb a:hover { text-decoration: underline; }
+
+      .container { padding: 28px 32px; }
+
+      /* ── Company grid ── */
+      .companies-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+
+      .company-card {
+        background: #fff;
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 28px 32px;
+        cursor: pointer;
+        width: 260px;
+        transition: box-shadow 0.18s, border-color 0.18s;
+      }
+      .company-card:hover {
+        box-shadow: 0 4px 18px rgba(1,158,227,0.15);
+        border-color: #019ee3;
+      }
+      .company-card .company-icon {
+        font-size: 36px;
+        margin-bottom: 12px;
+      }
+      .company-card .company-name {
+        font-size: 16px;
+        font-weight: 700;
+        color: #111;
+        margin-bottom: 4px;
+      }
+      .company-card .company-count {
+        font-size: 13px;
+        color: #888;
+      }
+
+      /* ── Signature list ── */
+      .sig-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+      .sig-header h2 {
+        font-size: 18px;
+        font-weight: 700;
+        color: #111;
+      }
+
+      .sig-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+
+      .sig-card {
+        background: #fff;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 16px 20px;
+        cursor: pointer;
+        width: 240px;
+        transition: box-shadow 0.18s, border-color 0.18s;
+      }
+      .sig-card:hover {
+        box-shadow: 0 3px 14px rgba(1,158,227,0.15);
+        border-color: #019ee3;
+      }
+      .sig-card .sig-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #e8f6fd;
+        color: #019ee3;
+        font-size: 16px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 10px;
+      }
+      .sig-card .sig-name {
+        font-size: 14px;
+        font-weight: 700;
+        color: #111;
+        margin-bottom: 3px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .sig-card .sig-pos {
+        font-size: 12px;
+        color: #666;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .sig-card .sig-email {
+        font-size: 11px;
+        color: #aaa;
+        margin-top: 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      /* ── Viewer ── */
+      .viewer-toolbar {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+      .viewer-toolbar h2 {
+        font-size: 16px;
+        font-weight: 700;
+        color: #111;
+      }
+
+      .btn-back {
+        background: none;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        padding: 6px 14px;
+        font-size: 13px;
+        cursor: pointer;
+        color: #444;
+        transition: background 0.15s;
+      }
+      .btn-back:hover { background: #f0f0f0; }
+
+      .sig-iframe-wrap {
+        background: #fff;
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 32px;
+        overflow: auto;
+      }
+
+      iframe {
+        width: 100%;
+        border: none;
+        min-height: 520px;
+        display: block;
+      }
+
+      /* ── Sections ── */
+      .section { display: none; }
+      .section.active { display: block; }
+    </style>
+  </head>
+  <body>
+    <header>Email Signatures</header>
+
+    <div class="breadcrumb" id="breadcrumb">
+      <span>Home</span>
+    </div>
+
+    <div class="container">
+
+      <!-- COMPANIES LIST -->
+      <div class="section active" id="section-home">
+        <div class="companies-grid" id="companies-grid"></div>
+      </div>
+
+      <!-- SIGNATURES LIST -->
+      <div class="section" id="section-company">
+        <div class="sig-header">
+          <h2 id="company-title"></h2>
+        </div>
+        <div class="sig-grid" id="sig-grid"></div>
+      </div>
+
+      <!-- SIGNATURE VIEWER -->
+      <div class="section" id="section-viewer">
+        <div class="viewer-toolbar">
+          <button class="btn-back" id="btn-back-to-company">← Back</button>
+          <h2 id="viewer-title"></h2>
+        </div>
+        <div class="sig-iframe-wrap">
+          <iframe id="sig-iframe" src="" title="Email Signature Preview"></iframe>
+        </div>
+      </div>
+
+    </div>
+
+    <script>
+      const companies = [
+        {
+          id: "ghothane-lawyers",
+          name: "Ghothane Lawyers",
+          icon: "⚖️",
+          signatures: [
+            { file: "tonnou.html",    name: "Tonnou Ghothane",      position: "Principal Lawyer",                                  email: "tonnou@ghothane.com.au" },
+            { file: "ajay.html",      name: "Ajay Sharma",          position: "Senior Lawyer",                                     email: "ajay@ghothane.com.au" },
+            { file: "rajaneesh.html", name: "Rajaneesh Shah",       position: "Senior Lawyer",                                     email: "rajaneesh@ghothane.com.au" },
+            { file: "anjana.html",    name: "Anjana Lama",          position: "Immigration Consultant",                            email: "anjana@ghothane.com.au" },
+            { file: "sachyam.html",   name: "Sachyam Bhattachan",   position: "Business Development and Marketing Manager",        email: "sachyam@ghothane.com.au" },
+            { file: "srijju.html",    name: "Srijju Shakya",        position: "Manager",                                           email: "srijju@ghothane.com.au" },
+            { file: "sunaina.html",   name: "Sunaina Shrestha",     position: "Paralegal Team Leader",                             email: "sunaina@ghothane.com.au" },
+            { file: "stuti.html",     name: "Stuti Khadka",         position: "Legal Secretary",                                   email: "stuti@ghothane.com.au" },
+            { file: "priya.html",     name: "Priya Upadhayay",      position: "Office Secretary",                                  email: "priya@ghothane.com.au" },
+            { file: "bibisha.html",   name: "Bibisha Shrestha",     position: "Paralegal",                                         email: "bibisha@ghothane.com.au" },
+            { file: "minma.html",     name: "Minma Hangma Rai",     position: "Paralegal",                                         email: "minma@ghothane.com.au" },
+            { file: "deeti.html",     name: "Deeti Acharya",        position: "Paralegal",                                         email: "deeti@ghothane.com.au" },
+            { file: "bishnu.html",    name: "Bishnu Maya Sunuwar",  position: "Paralegal",                                         email: "bishnu@ghothane.com.au" },
+            { file: "manusha.html",   name: "Manusha Shrestha",     position: "Paralegal",                                         email: "manusha@ghothane.com.au" },
+            { file: "pratiksha.html", name: "Pratiksha Joshi",      position: "Paralegal",                                         email: "pratiksha@ghothane.com.au" },
+            { file: "binita.html",    name: "Binita Prajapati",     position: "Paralegal",                                         email: "binita@ghothane.com.au" },
+            { file: "prerana.html",   name: "Prerana Rajbanshi",    position: "Paralegal",                                         email: "prerana@ghothane.com.au" },
+            { file: "accounts.html",  name: "Accounts",             position: "Department",                                        email: "accounts@ghothane.com.au" },
+            { file: "immigration.html",name:"Immigration",          position: "Department",                                        email: "immigration@ghothane.com.au" },
+            { file: "info.html",      name: "Info",                 position: "Department",                                        email: "info@ghothane.com.au" },
+            { file: "leads.html",     name: "Leads",                position: "Department",                                        email: "leads@ghothane.com.au" },
+            { file: "visa.html",      name: "Visa",                 position: "Department",                                        email: "visa@ghothane.com.au" },
+          ]
+        }
+      ];
+
+      let currentCompany = null;
+
+      function initials(name) {
+        return name.split(" ").slice(0, 2).map(w => w[0].toUpperCase()).join("");
+      }
+
+      function showSection(id) {
+        document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+        document.getElementById(id).classList.add("active");
+      }
+
+      function setBreadcrumb(html) {
+        document.getElementById("breadcrumb").innerHTML = html;
+      }
+
+      // ── Render companies ──
+      function renderHome() {
+        const grid = document.getElementById("companies-grid");
+        grid.innerHTML = "";
+        companies.forEach(company => {
+          const card = document.createElement("div");
+          card.className = "company-card";
+          card.innerHTML = `
+            <div class="company-icon">${company.icon}</div>
+            <div class="company-name">${company.name}</div>
+            <div class="company-count">${company.signatures.length} signatures</div>
+          `;
+          card.addEventListener("click", () => renderCompany(company));
+          grid.appendChild(card);
+        });
+        setBreadcrumb(`<span>Home</span>`);
+        showSection("section-home");
+      }
+
+      // ── Render signatures list ──
+      function renderCompany(company) {
+        currentCompany = company;
+        document.getElementById("company-title").textContent = company.name;
+        const grid = document.getElementById("sig-grid");
+        grid.innerHTML = "";
+
+        company.signatures.forEach(sig => {
+          const card = document.createElement("div");
+          card.className = "sig-card";
+          card.innerHTML = `
+            <div class="sig-avatar">${initials(sig.name)}</div>
+            <div class="sig-name">${sig.name}</div>
+            <div class="sig-pos">${sig.position}</div>
+            <div class="sig-email">${sig.email}</div>
+          `;
+          card.addEventListener("click", () => renderViewer(company, sig));
+          grid.appendChild(card);
+        });
+
+        setBreadcrumb(`
+          <a onclick="renderHome()">Home</a> / <span>${company.name}</span>
+        `);
+        showSection("section-company");
+      }
+
+      // ── Render viewer ──
+      function renderViewer(company, sig) {
+        document.getElementById("viewer-title").textContent = sig.name;
+        const iframe = document.getElementById("sig-iframe");
+        iframe.src = `${company.id}/${sig.file}`;
+
+        document.getElementById("btn-back-to-company").onclick = () => renderCompany(company);
+
+        setBreadcrumb(`
+          <a onclick="renderHome()">Home</a> /
+          <a onclick="renderCompany(currentCompany)">${company.name}</a> /
+          <span>${sig.name}</span>
+        `);
+        showSection("section-viewer");
+      }
+
+      // Auto-resize iframe
+      document.getElementById("sig-iframe").addEventListener("load", function () {
+        try {
+          const h = this.contentDocument.body.scrollHeight;
+          if (h > 100) this.style.height = (h + 40) + "px";
+        } catch(e) {}
+      });
+
+      renderHome();
+    </script>
+  </body>
+</html>
