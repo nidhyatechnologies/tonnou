@@ -287,7 +287,8 @@
         margin-bottom: 14px;
       }
       .generator-field input,
-      .generator-field select {
+      .generator-field select,
+      .generator-field textarea {
         border: 1px solid #cbd3da;
         border-radius: 6px;
         display: block;
@@ -295,6 +296,11 @@
         margin-top: 6px;
         padding: 9px 10px;
         width: 100%;
+      }
+      .generator-field textarea {
+        line-height: 1.4;
+        min-height: 92px;
+        resize: vertical;
       }
       .generator-actions {
         display: flex;
@@ -400,12 +406,22 @@
           <input id="generator-name" required autocomplete="name" />
         </label>
         <label class="generator-field">
+          Position
+          <input id="generator-position" required autocomplete="organization-title" />
+        </label>
+        <label class="generator-field">
           Email
           <input id="generator-email" type="email" required autocomplete="email" />
         </label>
         <label class="generator-field">
           Phone
           <input id="generator-phone" required autocomplete="tel" />
+        </label>
+        <label class="generator-field">
+          Email closing
+          <textarea id="generator-closing" required>Please contact me if you require further clarification.
+Thank you.
+Yours faithfully,</textarea>
         </label>
         <div class="generator-error" id="generator-error"></div>
         <div class="generator-actions">
@@ -889,14 +905,26 @@
         const type = document.getElementById("generator-template").value;
         const definition = generatorTemplates[type];
         const name = document.getElementById("generator-name").value.trim();
+        const position = document.getElementById("generator-position").value.trim();
         const email = document.getElementById("generator-email").value.trim();
         const phone = document.getElementById("generator-phone").value.trim();
-        if (!definition || !name || !email || !phone) return;
+        const closing = document.getElementById("generator-closing").value.trim();
+        if (!definition || !name || !position || !email || !phone || !closing) return;
         try {
           const response = await fetch(definition.file);
           if (!response.ok) throw new Error("Template could not be loaded.");
           const phoneDigits = phone.replace(/[^+\d]/g, "");
+          const closingRows = closing
+            .split(/\r?\n/)
+            .filter((line) => line.trim())
+            .map(
+              (line) =>
+                `<tr><td style="padding:0 0 8px 0">${escapeHtml(line.trim())}</td></tr>`,
+            )
+            .join("");
+          const signOffRows = `${closingRows}<tr><td style="font-weight:bold;line-height:22px;padding-bottom:2px">${escapeHtml(name)}</td></tr><tr><td style="padding-bottom:12px">${escapeHtml(position)}</td></tr>`;
           const html = (await response.text())
+            .replace(/(<table\b[^>]*>)[\s\S]*?<\/table>/, `$1${signOffRows}</table>`)
             .replaceAll("{{FULL_NAME}}", escapeHtml(name))
             .replaceAll("{{EMAIL}}", escapeHtml(email))
             .replaceAll("{{PHONE_DISPLAY}}", escapeHtml(phone))
@@ -907,7 +935,7 @@
             companyId: definition.companyId,
             name,
             email,
-            position: `Generated — ${definition.label}`,
+            position,
             generated: true,
             html,
           });
