@@ -23,6 +23,19 @@
         font-size: 20px;
         font-weight: 600;
         letter-spacing: 0.3px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .generator-button {
+        background: #fff;
+        border: 0;
+        border-radius: 6px;
+        color: #017db4;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 700;
+        padding: 9px 13px;
       }
       .breadcrumb {
         padding: 12px 32px;
@@ -65,6 +78,24 @@
       .sig-card {
         width: 240px;
         padding: 16px 20px;
+      }
+      .sig-card-actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 12px;
+      }
+      .delete-signature {
+        border: 1px solid #d92d20;
+        border-radius: 5px;
+        background: #fff;
+        color: #b42318;
+        cursor: pointer;
+        font: inherit;
+        font-size: 12px;
+        padding: 5px 9px;
+      }
+      .delete-signature:hover {
+        background: #fff1f0;
       }
       .company-card:hover,
       .sig-card:hover {
@@ -218,10 +249,100 @@
         max-width: 760px;
         min-height: 600px;
       }
+      .generator-overlay {
+        align-items: center;
+        background: rgba(0, 0, 0, 0.45);
+        display: none;
+        inset: 0;
+        justify-content: center;
+        padding: 20px;
+        position: fixed;
+        z-index: 10000;
+      }
+      .generator-overlay.open {
+        display: flex;
+      }
+      .generator-dialog {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 12px 38px rgba(0, 0, 0, 0.2);
+        max-width: 440px;
+        padding: 24px;
+        width: 100%;
+      }
+      .generator-dialog h2 {
+        font-size: 19px;
+        margin-bottom: 8px;
+      }
+      .generator-dialog p {
+        color: #666;
+        font-size: 13px;
+        line-height: 1.45;
+        margin-bottom: 18px;
+      }
+      .generator-field {
+        display: block;
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 14px;
+      }
+      .generator-field input,
+      .generator-field select,
+      .generator-field textarea {
+        border: 1px solid #cbd3da;
+        border-radius: 6px;
+        display: block;
+        font: inherit;
+        margin-top: 6px;
+        padding: 9px 10px;
+        width: 100%;
+      }
+      .generator-field textarea {
+        line-height: 1.4;
+        min-height: 92px;
+        resize: vertical;
+      }
+      .generator-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        margin-top: 20px;
+      }
+      .generator-actions button {
+        border: 0;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 700;
+        padding: 9px 13px;
+      }
+      #generator-cancel {
+        background: #edf1f4;
+        color: #444;
+      }
+      #generator-submit {
+        background: #019ee3;
+        color: #fff;
+      }
+      .generator-error {
+        color: #bb1b1b;
+        display: none;
+        font-size: 12px;
+        line-height: 1.4;
+        margin-top: 12px;
+      }
+      .generator-error.show {
+        display: block;
+      }
     </style>
   </head>
   <body>
-    <header>Email Signatures</header>
+    <header>
+      <span>Email Signatures</span>
+      <button class="generator-button" id="open-generator" type="button">
+        Signature Generator
+      </button>
+    </header>
     <div class="breadcrumb" id="breadcrumb"><span>Home</span></div>
 
     <div class="container">
@@ -262,6 +383,52 @@
           title="Email Signature Fullscreen"
         ></iframe>
       </div>
+    </div>
+
+    <div class="generator-overlay" id="generator-overlay" aria-hidden="true">
+      <form class="generator-dialog" id="generator-form">
+        <h2>Signature Generator</h2>
+        <p>
+          Create a signature from the correct company and location template.
+          It will be saved in this browser's signature list.
+        </p>
+        <label class="generator-field">
+          Company / location
+          <select id="generator-template" required>
+            <option value="ghothane">Ghothane Lawyers</option>
+            <option value="twgg-australia">TWGG Australia</option>
+            <option value="twgg-kathmandu">TWGG Kathmandu</option>
+            <option value="twgg-pokhara">TWGG Pokhara</option>
+          </select>
+        </label>
+        <label class="generator-field">
+          Full name
+          <input id="generator-name" required autocomplete="name" />
+        </label>
+        <label class="generator-field">
+          Position
+          <input id="generator-position" required autocomplete="organization-title" />
+        </label>
+        <label class="generator-field">
+          Email
+          <input id="generator-email" type="email" required autocomplete="email" />
+        </label>
+        <label class="generator-field">
+          Phone
+          <input id="generator-phone" required autocomplete="tel" />
+        </label>
+        <label class="generator-field">
+          Email closing
+          <textarea id="generator-closing" required>Please contact me if you require further clarification.
+Thank you.
+Yours faithfully,</textarea>
+        </label>
+        <div class="generator-error" id="generator-error"></div>
+        <div class="generator-actions">
+          <button id="generator-cancel" type="button">Cancel</button>
+          <button id="generator-submit" type="submit">Generate signature</button>
+        </div>
+      </form>
     </div>
 
     <script>
@@ -464,11 +631,146 @@
               position: "Counsellor",
               email: "sharmila@twgg.com.au",
             },
+            {
+              file: "accounts.ktm.html",
+              name: "Accounts",
+              position: "Mailbox - Kathmandu",
+              email: "accounts.ktm@twgg.com.au",
+            },
+            {
+              file: "pokhara/summit.html",
+              name: "Summit Gurung",
+              position: "English Teacher",
+              email: "summit@twgg.com.au",
+            },
+            {
+              file: "pokhara/roshan.html",
+              name: "Roshan Thapa",
+              position: "Manager",
+              email: "roshan@twgg.com.au",
+            },
+            {
+              file: "pokhara/shiva.html",
+              name: "Shiva Thapa",
+              position: "Director",
+              email: "shiva@twgg.com.au",
+            },
+            {
+              file: "pokhara/ashok.html",
+              name: "Ashok Gurung",
+              position: "Director",
+              email: "ashok@twgg.com.au",
+            },
+            {
+              file: "pokhara/anita.html",
+              name: "Anita Gurung",
+              position: "Counsellor",
+              email: "anita@twgg.com.au",
+            },
+            {
+              file: "pokhara/merina.html",
+              name: "Merina Gurung",
+              position: "Counsellor",
+              email: "merina@twgg.com.au",
+            },
+            {
+              file: "pokhara/tripti.html",
+              name: "Tripti Acharya",
+              position: "Receptionist",
+              email: "tripti@twgg.com.au",
+            },
+            {
+              file: "pokhara/ask.pkr.html",
+              name: "Ask",
+              position: "Mailbox - Pokhara",
+              email: "ask.pkr@twgg.com.au",
+            },
+            {
+              file: "pokhara/accounts.pkr.html",
+              name: "Accounts",
+              position: "Mailbox - Pokhara",
+              email: "accounts.pkr@twgg.com.au",
+            },
+            {
+              file: "pokhara/study.pkr.html",
+              name: "Study",
+              position: "Mailbox - Pokhara",
+              email: "study.pkr@twgg.com.au",
+            },
           ],
         },
       ];
 
       let currentCompany = null;
+      const generatedStorageKey = "email-signatures-generated-v1";
+      const generatorTemplates = {
+        ghothane: {
+          companyId: "ghothane-lawyers",
+          file: "ghothane-lawyers/new-employee-template.html",
+          label: "Ghothane Lawyers",
+        },
+        "twgg-australia": {
+          companyId: "twgg",
+          file: "twgg/new-employee-australia-template.html",
+          label: "TWGG Australia",
+        },
+        "twgg-kathmandu": {
+          companyId: "twgg",
+          file: "twgg/new-employee-kathmandu-template.html",
+          label: "TWGG Kathmandu",
+        },
+        "twgg-pokhara": {
+          companyId: "twgg",
+          file: "twgg/new-employee-pokhara-template.html",
+          label: "TWGG Pokhara",
+        },
+      };
+      const escapeHtml = (value) =>
+        value.replace(/[&<>"']/g, (char) =>
+          ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char],
+        );
+      const loadGeneratedSignatures = () => {
+        try {
+          const data = JSON.parse(localStorage.getItem(generatedStorageKey) || "[]");
+          return Array.isArray(data) ? data : [];
+        } catch {
+          return [];
+        }
+      };
+      const saveGeneratedSignatures = (signatures) =>
+        localStorage.setItem(generatedStorageKey, JSON.stringify(signatures));
+      const removeKathmanduPostOfficeFromGeneratedSignatures = () => {
+        const signatures = loadGeneratedSignatures();
+        let changed = false;
+        const updated = signatures.map((signature) => {
+          if (
+            !signature.position?.includes("Kathmandu") ||
+            !signature.html?.includes("+977 9709 169 057")
+          ) {
+            return signature;
+          }
+          const html = signature.html.replace(
+            /<tr><td[^>]*><img[^>]*post-mail-box[^>]*><\/td><td[^>]*>\+977 9709 169 057<\/td><\/tr>\s*/i,
+            "",
+          );
+          if (html !== signature.html) changed = true;
+          return { ...signature, html };
+        });
+        if (changed) saveGeneratedSignatures(updated);
+      };
+      const deleteGeneratedSignature = (id) => {
+        const signature = loadGeneratedSignatures().find((item) => item.id === id);
+        if (!signature) return;
+        if (!window.confirm(`Delete the generated signature for ${signature.name}?`)) return;
+        saveGeneratedSignatures(
+          loadGeneratedSignatures().filter((item) => item.id !== id),
+        );
+        if (currentCompany) renderCompany(currentCompany);
+      };
+      const signaturesFor = (company) => [
+        ...company.signatures,
+        ...loadGeneratedSignatures().filter((sig) => sig.companyId === company.id),
+      ];
       const initials = (name) =>
         name
           .split(" ")
@@ -485,7 +787,16 @@
         document.getElementById("breadcrumb").innerHTML = html;
       };
       const getSignatureUrl = (company, sig) => `${company.id}/${sig.file}`;
+      const getGeneratedSignatureUrl = (sig) => {
+        const url = new URL("generated-signature.html", window.location.href);
+        url.searchParams.set("generated", sig.id);
+        return url.toString();
+      };
       const openSignatureInNewTab = (company, sig) => {
+        if (sig.generated) {
+          window.open(getGeneratedSignatureUrl(sig), "_blank", "noopener");
+          return;
+        }
         window.open(getSignatureUrl(company, sig), "_blank", "noopener");
       };
 
@@ -495,7 +806,7 @@
         companies.forEach((company) => {
           const card = document.createElement("div");
           card.className = "company-card";
-          card.innerHTML = `<div class="company-icon">${company.icon}</div><div class="company-name">${company.name}</div><div class="company-count">${company.signatures.length} signatures</div>`;
+          card.innerHTML = `<div class="company-icon">${company.icon}</div><div class="company-name">${company.name}</div><div class="company-count">${signaturesFor(company).length} signatures</div>`;
           card.addEventListener("click", () => renderCompany(company));
           grid.appendChild(card);
         });
@@ -508,13 +819,19 @@
         document.getElementById("company-title").textContent = company.name;
         const grid = document.getElementById("sig-grid");
         grid.innerHTML = "";
-        company.signatures.forEach((sig) => {
+        signaturesFor(company).forEach((sig) => {
           const card = document.createElement("div");
           card.className = "sig-card";
-          card.innerHTML = `<div class="sig-avatar">${initials(sig.name)}</div><div class="sig-name">${sig.name}</div><div class="sig-pos">${sig.position}</div><div class="sig-email">${sig.email}</div>`;
+          card.innerHTML = `<div class="sig-avatar">${initials(sig.name)}</div><div class="sig-name">${escapeHtml(sig.name)}</div><div class="sig-pos">${escapeHtml(sig.position)}</div><div class="sig-email">${escapeHtml(sig.email)}</div>${sig.generated ? '<div class="sig-card-actions"><button class="delete-signature" type="button">Delete</button></div>' : ""}`;
           card.addEventListener("click", () =>
             openSignatureInNewTab(company, sig),
           );
+          if (sig.generated) {
+            card.querySelector(".delete-signature").addEventListener("click", (event) => {
+              event.stopPropagation();
+              deleteGeneratedSignature(sig.id);
+            });
+          }
           grid.appendChild(card);
         });
         setBreadcrumb(
@@ -566,6 +883,75 @@
           } catch (e) {}
         });
 
+      const generatorOverlay = document.getElementById("generator-overlay");
+      const generatorError = document.getElementById("generator-error");
+      const closeGenerator = () => {
+        generatorOverlay.classList.remove("open");
+        generatorOverlay.setAttribute("aria-hidden", "true");
+        generatorError.classList.remove("show");
+        generatorError.textContent = "";
+      };
+      document.getElementById("open-generator").addEventListener("click", () => {
+        generatorOverlay.classList.add("open");
+        generatorOverlay.setAttribute("aria-hidden", "false");
+        document.getElementById("generator-name").focus();
+      });
+      document.getElementById("generator-cancel").addEventListener("click", closeGenerator);
+      generatorOverlay.addEventListener("click", (event) => {
+        if (event.target === generatorOverlay) closeGenerator();
+      });
+      document.getElementById("generator-form").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const type = document.getElementById("generator-template").value;
+        const definition = generatorTemplates[type];
+        const name = document.getElementById("generator-name").value.trim();
+        const position = document.getElementById("generator-position").value.trim();
+        const email = document.getElementById("generator-email").value.trim();
+        const phone = document.getElementById("generator-phone").value.trim();
+        const closing = document.getElementById("generator-closing").value.trim();
+        if (!definition || !name || !position || !email || !phone || !closing) return;
+        try {
+          const response = await fetch(definition.file);
+          if (!response.ok) throw new Error("Template could not be loaded.");
+          const phoneDigits = phone.replace(/[^+\d]/g, "");
+          const closingRows = closing
+            .split(/\r?\n/)
+            .filter((line) => line.trim())
+            .map(
+              (line) =>
+                `<tr><td style="padding:0 0 8px 0">${escapeHtml(line.trim())}</td></tr>`,
+            )
+            .join("");
+          const signOffRows = `${closingRows}<tr><td style="font-weight:bold;line-height:22px;padding-bottom:2px">${escapeHtml(name)}</td></tr><tr><td style="padding-bottom:12px">${escapeHtml(position)}</td></tr>`;
+          const html = (await response.text())
+            .replace(/(<table\b[^>]*>)[\s\S]*?<\/table>/, `$1${signOffRows}</table>`)
+            .replaceAll("{{FULL_NAME}}", escapeHtml(name))
+            .replaceAll("{{EMAIL}}", escapeHtml(email))
+            .replaceAll("{{PHONE_DISPLAY}}", escapeHtml(phone))
+            .replaceAll("{{PHONE_DIGITS}}", escapeHtml(phoneDigits));
+          const generated = loadGeneratedSignatures();
+          generated.push({
+            id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+            companyId: definition.companyId,
+            name,
+            email,
+            position,
+            generated: true,
+            html,
+          });
+          saveGeneratedSignatures(generated);
+          document.getElementById("generator-form").reset();
+          closeGenerator();
+          const company = companies.find((item) => item.id === definition.companyId);
+          renderCompany(company);
+        } catch (error) {
+          generatorError.textContent =
+            "The template could not be loaded. Open this site through its hosted web address and try again.";
+          generatorError.classList.add("show");
+        }
+      });
+
+      removeKathmanduPostOfficeFromGeneratedSignatures();
       renderHome();
     </script>
   </body>

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Generated Email Signature</title>
+  </head>
+  <body>
+    <script>
+      const signatureId = new URLSearchParams(window.location.search).get("generated");
+      let signatures = [];
+
+      try {
+        const saved = JSON.parse(
+          localStorage.getItem("email-signatures-generated-v1") || "[]",
+        );
+        signatures = Array.isArray(saved) ? saved : [];
+      } catch {
+        signatures = [];
+      }
+
+      const signature = signatures.find((item) => item.id === signatureId);
+      if (signature?.html) {
+        document.open();
+        document.write(signature.html);
+        document.close();
+      } else {
+        document.body.textContent = "This generated signature is unavailable in this browser.";
+      }
+    </script>
+  </body>
+</html>
