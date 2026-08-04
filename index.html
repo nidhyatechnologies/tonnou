@@ -395,7 +395,8 @@
         <label class="generator-field">
           Company / location
           <select id="generator-template" required>
-            <option value="ghothane">Ghothane Lawyers</option>
+            <option value="ghothane-multiple">Ghothane Lawyers — Multiple Location</option>
+            <option value="ghothane-single">Ghothane Lawyers — Single Location</option>
             <option value="twgg-australia">TWGG Australia</option>
             <option value="twgg-kathmandu">TWGG Kathmandu</option>
             <option value="twgg-pokhara">TWGG Pokhara</option>
@@ -434,8 +435,9 @@ Yours faithfully,</textarea>
     <script>
       const companies = [
         {
-          id: "ghothane-lawyers",
-          name: "Ghothane Lawyers",
+          id: "ghothane-lawyers-multiple",
+          name: "Ghothane Lawyers — Multiple Location",
+          rootPath: "ghothane-lawyers",
           icon: "??",
           signatures: [
             {
@@ -701,13 +703,29 @@ Yours faithfully,</textarea>
         },
       ];
 
+      companies.splice(1, 0, {
+        id: "ghothane-lawyers-single",
+        name: "Ghothane Lawyers — Single Location",
+        rootPath: "ghothane-lawyers",
+        icon: "??",
+        signatures: companies[0].signatures.map((signature) => ({
+          ...signature,
+          file: `single-location/${signature.file}`,
+        })),
+      });
+
       let currentCompany = null;
       const generatedStorageKey = "email-signatures-generated-v1";
       const generatorTemplates = {
-        ghothane: {
-          companyId: "ghothane-lawyers",
+        "ghothane-multiple": {
+          companyId: "ghothane-lawyers-multiple",
           file: "ghothane-lawyers/new-employee-template.html",
-          label: "Ghothane Lawyers",
+          label: "Ghothane Lawyers — Multiple Location",
+        },
+        "ghothane-single": {
+          companyId: "ghothane-lawyers-single",
+          file: "ghothane-lawyers/single-location/new-employee-template.html",
+          label: "Ghothane Lawyers — Single Location",
         },
         "twgg-australia": {
           companyId: "twgg",
@@ -739,6 +757,17 @@ Yours faithfully,</textarea>
       };
       const saveGeneratedSignatures = (signatures) =>
         localStorage.setItem(generatedStorageKey, JSON.stringify(signatures));
+      const migrateGhothaneGeneratedSignatures = () => {
+        const signatures = loadGeneratedSignatures();
+        const updated = signatures.map((signature) =>
+          signature.companyId === "ghothane-lawyers"
+            ? { ...signature, companyId: "ghothane-lawyers-multiple" }
+            : signature,
+        );
+        if (updated.some((signature, index) => signature !== signatures[index])) {
+          saveGeneratedSignatures(updated);
+        }
+      };
       const removeKathmanduPostOfficeFromGeneratedSignatures = () => {
         const signatures = loadGeneratedSignatures();
         let changed = false;
@@ -786,7 +815,8 @@ Yours faithfully,</textarea>
       const setBreadcrumb = (html) => {
         document.getElementById("breadcrumb").innerHTML = html;
       };
-      const getSignatureUrl = (company, sig) => `${company.id}/${sig.file}`;
+      const getSignatureUrl = (company, sig) =>
+        `${company.rootPath || company.id}/${sig.file}`;
       const getGeneratedSignatureUrl = (sig) => {
         const url = new URL("generated-signature.html", window.location.href);
         url.searchParams.set("generated", sig.id);
@@ -951,6 +981,7 @@ Yours faithfully,</textarea>
         }
       });
 
+      migrateGhothaneGeneratedSignatures();
       removeKathmanduPostOfficeFromGeneratedSignatures();
       renderHome();
     </script>
