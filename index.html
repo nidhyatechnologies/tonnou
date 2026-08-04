@@ -952,7 +952,7 @@ Yours faithfully,</textarea>
                 `<tr><td style="padding:0 0 8px 0">${escapeHtml(line.trim())}</td></tr>`,
             )
             .join("");
-          const signOffRows = `${closingRows}<tr><td style="font-weight:bold;line-height:22px;padding-bottom:2px">${escapeHtml(name)}</td></tr><tr><td style="padding-bottom:12px">${escapeHtml(position)}</td></tr>`;
+          const signOffRows = `${closingRows}<tr><td style="font-weight:bold;line-height:22px">${escapeHtml(name)}</td></tr><tr><td style="line-height:22px;padding-bottom:12px">${escapeHtml(position)}</td></tr>`;
           const html = (await response.text())
             .replace(/(<table\b[^>]*>)[\s\S]*?<\/table>/, `$1${signOffRows}</table>`)
             .replaceAll("{{FULL_NAME}}", escapeHtml(name))
