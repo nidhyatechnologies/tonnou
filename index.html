@@ -153,6 +153,12 @@
         overflow: hidden;
         text-overflow: ellipsis;
       }
+      .sig-variant {
+        color: #019ee3;
+        font-size: 11px;
+        font-weight: 700;
+        margin-top: 4px;
+      }
       .sig-email {
         font-size: 11px;
         color: #aaa;
@@ -444,13 +450,64 @@ Yours faithfully,</textarea>
           id: "ghothane-lawyers",
           name: "Ghothane Lawyers",
           icon: "GL",
-          signatures: [],
+          signatures: [
+            {
+              file: "demo-tonnou-melbourne.html",
+              name: "Tonnou Ghothane",
+              position: "Principal Lawyer",
+              variant: "Melbourne office only",
+              email: "tonnou@ghothane.com.au",
+            },
+            {
+              file: "demo-tonnou-sydney.html",
+              name: "Tonnou Ghothane",
+              position: "Principal Lawyer",
+              variant: "Sydney office only",
+              email: "tonnou@ghothane.com.au",
+            },
+            {
+              file: "demo-tonnou-melbourne-sydney.html",
+              name: "Tonnou Ghothane",
+              position: "Principal Lawyer",
+              variant: "Melbourne & Sydney offices",
+              email: "tonnou@ghothane.com.au",
+            },
+          ],
         },
         {
           id: "twgg",
           name: "TWGG",
           icon: "TW",
-          signatures: [],
+          signatures: [
+            {
+              file: "demo-tonnou-melbourne.html",
+              name: "Tonnou Ghothane",
+              position: "Advisor",
+              variant: "Melbourne office only",
+              email: "tonnou@twgg.com.au",
+            },
+            {
+              file: "demo-tonnou-kathmandu.html",
+              name: "Tonnou Ghothane",
+              position: "Advisor",
+              variant: "Kathmandu office only",
+              email: "tonnou@twgg.com.au",
+            },
+            {
+              file: "demo-tonnou-pokhara.html",
+              name: "Tonnou Ghothane",
+              position: "Advisor",
+              variant: "Pokhara office only",
+              email: "tonnou@twgg.com.au",
+            },
+            {
+              file: "demo-tonnou-all-locations.html",
+              name: "Tonnou Ghothane",
+              position: "Advisor",
+              variant: "Melbourne, Kathmandu & Pokhara",
+              email: "tonnou@twgg.com.au",
+            },
+          ],
         },
       ];
 
@@ -606,7 +663,7 @@ Yours faithfully,</textarea>
         signaturesFor(company).forEach((sig) => {
           const card = document.createElement("div");
           card.className = "sig-card";
-          card.innerHTML = `<div class="sig-avatar">${initials(sig.name)}</div><div class="sig-name">${escapeHtml(sig.name)}</div><div class="sig-pos">${escapeHtml(sig.position)}</div><div class="sig-email">${escapeHtml(sig.email)}</div>${sig.generated ? '<div class="sig-card-actions"><button class="delete-signature" type="button">Delete</button></div>' : ""}`;
+          card.innerHTML = `<div class="sig-avatar">${initials(sig.name)}</div><div class="sig-name">${escapeHtml(sig.name)}</div><div class="sig-pos">${escapeHtml(sig.position)}</div>${sig.variant ? `<div class="sig-variant">${escapeHtml(sig.variant)}</div>` : ""}<div class="sig-email">${escapeHtml(sig.email)}</div>${sig.generated ? '<div class="sig-card-actions"><button class="delete-signature" type="button">Delete</button></div>' : ""}`;
           card.addEventListener("click", () =>
             openSignatureInNewTab(company, sig),
           );
