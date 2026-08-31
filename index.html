@@ -395,11 +395,17 @@
         <label class="generator-field">
           Company / location
           <select id="generator-template" required>
-            <option value="ghothane-multiple">Ghothane Lawyers — Multiple Location</option>
-            <option value="ghothane-single">Ghothane Lawyers — Single Location</option>
-            <option value="twgg-australia">TWGG Australia</option>
-            <option value="twgg-kathmandu">TWGG Kathmandu</option>
-            <option value="twgg-pokhara">TWGG Pokhara</option>
+            <optgroup label="Ghothane Lawyers">
+              <option value="ghothane-melbourne">Melbourne office only</option>
+              <option value="ghothane-sydney">Sydney office only</option>
+              <option value="ghothane-both">Melbourne &amp; Sydney offices</option>
+            </optgroup>
+            <optgroup label="TWGG">
+              <option value="twgg-melbourne">Melbourne office only</option>
+              <option value="twgg-kathmandu">Kathmandu office only</option>
+              <option value="twgg-pokhara">Pokhara office only</option>
+              <option value="twgg-all">Melbourne, Kathmandu &amp; Pokhara</option>
+            </optgroup>
           </select>
         </label>
         <label class="generator-field">
@@ -435,312 +441,56 @@ Yours faithfully,</textarea>
     <script>
       const companies = [
         {
-          id: "ghothane-lawyers-multiple",
-          name: "Ghothane Lawyers — Multiple Location",
-          rootPath: "ghothane-lawyers",
-          icon: "??",
-          signatures: [
-            {
-              file: "tonnou.html",
-              name: "Tonnou Ghothane",
-              position: "Principal Lawyer",
-              email: "tonnou@ghothane.com.au",
-            },
-            {
-              file: "ajay.html",
-              name: "Ajay Sharma",
-              position: "Senior Lawyer",
-              email: "ajay@ghothane.com.au",
-            },
-            {
-              file: "rajaneesh.html",
-              name: "Rajaneesh Shah",
-              position: "Senior Lawyer",
-              email: "rajaneesh@ghothane.com.au",
-            },
-            {
-              file: "anjana.html",
-              name: "Anjana Lama",
-              position: "Immigration Consultant",
-              email: "anjana@ghothane.com.au",
-            },
-            {
-              file: "sachyam.html",
-              name: "Sachyam Bhattachan",
-              position: "Business Development and Marketing Manager",
-              email: "sachyam@ghothane.com.au",
-            },
-            {
-              file: "srijju.html",
-              name: "Srijju Shakya",
-              position: "Manager",
-              email: "srijju@ghothane.com.au",
-            },
-            {
-              file: "sunaina.html",
-              name: "Sunaina Shrestha",
-              position: "Paralegal Team Leader",
-              email: "sunaina@ghothane.com.au",
-            },
-            {
-              file: "stuti.html",
-              name: "Stuti Khadka",
-              position: "Legal Secretary",
-              email: "stuti@ghothane.com.au",
-            },
-            {
-              file: "priya.html",
-              name: "Priya Upadhayay",
-              position: "Office Secretary",
-              email: "priya@ghothane.com.au",
-            },
-            {
-              file: "bibisha.html",
-              name: "Bibisha Shrestha",
-              position: "Paralegal",
-              email: "bibisha@ghothane.com.au",
-            },
-            {
-              file: "minma.html",
-              name: "Minma Hangma Rai",
-              position: "Paralegal",
-              email: "minma@ghothane.com.au",
-            },
-            {
-              file: "deeti.html",
-              name: "Deeti Acharya",
-              position: "Paralegal",
-              email: "deeti@ghothane.com.au",
-            },
-            {
-              file: "bishnu.html",
-              name: "Bishnu Maya Sunuwar",
-              position: "Paralegal",
-              email: "bishnu@ghothane.com.au",
-            },
-            {
-              file: "manusha.html",
-              name: "Manusha Shrestha",
-              position: "Paralegal",
-              email: "manusha@ghothane.com.au",
-            },
-            {
-              file: "pratiksha.html",
-              name: "Pratiksha Joshi",
-              position: "Paralegal",
-              email: "pratiksha@ghothane.com.au",
-            },
-            {
-              file: "binita.html",
-              name: "Binita Prajapati",
-              position: "Paralegal",
-              email: "binita@ghothane.com.au",
-            },
-            {
-              file: "prerana.html",
-              name: "Prerana Rajbanshi",
-              position: "Paralegal",
-              email: "prerana@ghothane.com.au",
-            },
-            {
-              file: "accounts.html",
-              name: "Accounts",
-              position: "Department",
-              email: "accounts@ghothane.com.au",
-            },
-            {
-              file: "immigration.html",
-              name: "Immigration",
-              position: "Department",
-              email: "immigration@ghothane.com.au",
-            },
-            {
-              file: "info.html",
-              name: "Info",
-              position: "Department",
-              email: "info@ghothane.com.au",
-            },
-            {
-              file: "leads.html",
-              name: "Leads",
-              position: "Department",
-              email: "leads@ghothane.com.au",
-            },
-            {
-              file: "visa.html",
-              name: "Visa",
-              position: "Department",
-              email: "visa@ghothane.com.au",
-            },
-          ],
+          id: "ghothane-lawyers",
+          name: "Ghothane Lawyers",
+          icon: "GL",
+          signatures: [],
         },
         {
           id: "twgg",
           name: "TWGG",
-          icon: "??",
-          signatures: [
-            {
-              file: "tonnou.html",
-              name: "Tonnou Ghothane",
-              position: "Advisor",
-              email: "tonnou@twgg.com.au",
-            },
-            {
-              file: "suwarna.html",
-              name: "Suwarna Sapkota",
-              position: "Lead Advisor and Immigration Consultant",
-              email: "suwarna@twgg.com.au",
-            },
-            {
-              file: "accounts.html",
-              name: "Accounts",
-              position: "Mailbox - Australia",
-              email: "accounts@twgg.com.au",
-            },
-            {
-              file: "ask.html",
-              name: "Ask",
-              position: "Mailbox - Australia",
-              email: "ask@twgg.com.au",
-            },
-            {
-              file: "australia.html",
-              name: "Australia",
-              position: "Office - Australia",
-              email: "accounts.mel@twgg.com.au",
-            },
-            {
-              file: "study.html",
-              name: "Study",
-              position: "Mailbox - Australia",
-              email: "study@twgg.com.au",
-            },
-            {
-              file: "kathmandu.html",
-              name: "Kathmandu",
-              position: "Office - Nepal",
-              email: "ask.ktm@twgg.com.au",
-            },
-            {
-              file: "ritiz.html",
-              name: "Ritiz Gurung",
-              position: "Counsellor",
-              email: "ritiz@twgg.com.au",
-            },
-            {
-              file: "sharmila.html",
-              name: "Sharmila Lama",
-              position: "Counsellor",
-              email: "sharmila@twgg.com.au",
-            },
-            {
-              file: "accounts.ktm.html",
-              name: "Accounts",
-              position: "Mailbox - Kathmandu",
-              email: "accounts.ktm@twgg.com.au",
-            },
-            {
-              file: "pokhara/summit.html",
-              name: "Summit Gurung",
-              position: "English Teacher",
-              email: "summit@twgg.com.au",
-            },
-            {
-              file: "pokhara/roshan.html",
-              name: "Roshan Thapa",
-              position: "Manager",
-              email: "roshan@twgg.com.au",
-            },
-            {
-              file: "pokhara/shiva.html",
-              name: "Shiva Thapa",
-              position: "Director",
-              email: "shiva@twgg.com.au",
-            },
-            {
-              file: "pokhara/ashok.html",
-              name: "Ashok Gurung",
-              position: "Director",
-              email: "ashok@twgg.com.au",
-            },
-            {
-              file: "pokhara/anita.html",
-              name: "Anita Gurung",
-              position: "Counsellor",
-              email: "anita@twgg.com.au",
-            },
-            {
-              file: "pokhara/merina.html",
-              name: "Merina Gurung",
-              position: "Counsellor",
-              email: "merina@twgg.com.au",
-            },
-            {
-              file: "pokhara/tripti.html",
-              name: "Tripti Acharya",
-              position: "Receptionist",
-              email: "tripti@twgg.com.au",
-            },
-            {
-              file: "pokhara/ask.pkr.html",
-              name: "Ask",
-              position: "Mailbox - Pokhara",
-              email: "ask.pkr@twgg.com.au",
-            },
-            {
-              file: "pokhara/accounts.pkr.html",
-              name: "Accounts",
-              position: "Mailbox - Pokhara",
-              email: "accounts.pkr@twgg.com.au",
-            },
-            {
-              file: "pokhara/study.pkr.html",
-              name: "Study",
-              position: "Mailbox - Pokhara",
-              email: "study.pkr@twgg.com.au",
-            },
-          ],
+          icon: "TW",
+          signatures: [],
         },
       ];
-
-      companies.splice(1, 0, {
-        id: "ghothane-lawyers-single",
-        name: "Ghothane Lawyers — Single Location",
-        rootPath: "ghothane-lawyers",
-        icon: "??",
-        signatures: companies[0].signatures.map((signature) => ({
-          ...signature,
-          file: `single-location/${signature.file}`,
-        })),
-      });
 
       let currentCompany = null;
       const generatedStorageKey = "email-signatures-generated-v1";
       const generatorTemplates = {
-        "ghothane-multiple": {
-          companyId: "ghothane-lawyers-multiple",
-          file: "ghothane-lawyers/new-employee-template.html",
-          label: "Ghothane Lawyers — Multiple Location",
+        "ghothane-melbourne": {
+          companyId: "ghothane-lawyers",
+          file: "ghothane-lawyers/new-employee-melbourne-template.html",
+          label: "Ghothane Lawyers — Melbourne only",
         },
-        "ghothane-single": {
-          companyId: "ghothane-lawyers-single",
-          file: "ghothane-lawyers/single-location/new-employee-template.html",
-          label: "Ghothane Lawyers — Single Location",
+        "ghothane-sydney": {
+          companyId: "ghothane-lawyers",
+          file: "ghothane-lawyers/new-employee-sydney-template.html",
+          label: "Ghothane Lawyers — Sydney only",
         },
-        "twgg-australia": {
+        "ghothane-both": {
+          companyId: "ghothane-lawyers",
+          file: "ghothane-lawyers/new-employee-both-template.html",
+          label: "Ghothane Lawyers — Melbourne & Sydney",
+        },
+        "twgg-melbourne": {
           companyId: "twgg",
-          file: "twgg/new-employee-australia-template.html",
-          label: "TWGG Australia",
+          file: "twgg/new-employee-melbourne-template.html",
+          label: "TWGG — Melbourne only",
         },
         "twgg-kathmandu": {
           companyId: "twgg",
           file: "twgg/new-employee-kathmandu-template.html",
-          label: "TWGG Kathmandu",
+          label: "TWGG — Kathmandu only",
         },
         "twgg-pokhara": {
           companyId: "twgg",
           file: "twgg/new-employee-pokhara-template.html",
-          label: "TWGG Pokhara",
+          label: "TWGG — Pokhara only",
+        },
+        "twgg-all": {
+          companyId: "twgg",
+          file: "twgg/new-employee-all-locations-template.html",
+          label: "TWGG — Melbourne, Kathmandu & Pokhara",
         },
       };
       const escapeHtml = (value) =>
@@ -757,13 +507,17 @@ Yours faithfully,</textarea>
       };
       const saveGeneratedSignatures = (signatures) =>
         localStorage.setItem(generatedStorageKey, JSON.stringify(signatures));
-      const migrateGhothaneGeneratedSignatures = () => {
+      const migrateGeneratedSignatures = () => {
         const signatures = loadGeneratedSignatures();
-        const updated = signatures.map((signature) =>
-          signature.companyId === "ghothane-lawyers"
-            ? { ...signature, companyId: "ghothane-lawyers-multiple" }
-            : signature,
-        );
+        const updated = signatures.map((signature) => ({
+          ...signature,
+          companyId: [
+            "ghothane-lawyers-multiple",
+            "ghothane-lawyers-single",
+          ].includes(signature.companyId)
+            ? "ghothane-lawyers"
+            : signature.companyId,
+        }));
         if (updated.some((signature, index) => signature !== signatures[index])) {
           saveGeneratedSignatures(updated);
         }
@@ -981,7 +735,7 @@ Yours faithfully,</textarea>
         }
       });
 
-      migrateGhothaneGeneratedSignatures();
+      migrateGeneratedSignatures();
       removeKathmanduPostOfficeFromGeneratedSignatures();
       renderHome();
     </script>
